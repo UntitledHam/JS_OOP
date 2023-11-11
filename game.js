@@ -5,12 +5,12 @@ class Game {
 		this.empty_space_char = ".";
 		this.player_char = "P";
 		this.game_board = this.generate_game_board(10, 10);
-		this.player_pos = [0, 0];
+		this.player_pos = {"x": 0, "y": 0};
 	}
 
 
 	draw_player() {
-		this.game_board[this.player_pos[0]][this.player_pos[1]] = this.player_char; 
+		this.game_board[this.player_pos["x"]][this.player_pos["y"]] = this.player_char; 
 	}
 
 
@@ -22,9 +22,13 @@ class Game {
 			throw new Error(`Missing "x_amount" or "y_amount".`);
 		}
 
-		this.game_board[this.player_pos[0]][this.player_pos[1]] = this.empty_space_char;
-		this.player_pos[0] -= x_amount;
-		this.player_pos[1] -= y_amount; 
+		this.game_board[this.player_pos["x"]][this.player_pos["y"]] = this.empty_space_char;
+		if (this.player_pos["x"] - x_amount >= 0 && this.player_pos["x"] - x_amount < this.game_board[0].length) {
+			this.player_pos["x"] -= x_amount;
+		}
+		if (this.player_pos["y"] - y_amount >= 0 && this.player_pos["y"] - y_amount < this.game_board.length) {
+			this.player_pos["y"] -= y_amount;
+		}
 		this.draw_player();
 
 	}
