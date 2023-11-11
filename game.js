@@ -4,6 +4,7 @@ class Game {
 	constructor() {
 		this.show_coords = true;
 		this.empty_space_char = ".";
+		this.wall_char = "#";
 		this.player_char = "P";
 		this.game_board = this.generate_game_board(10, 10);
 		this.player_pos = {"x": 0, "y": 0};
@@ -15,23 +16,31 @@ class Game {
 	}
 
 
+	can_move_here(x_pos, y_pos) { 
+		if (x_pos < 0 || x_pos >= this.game_board[0].length) {
+			return false;
+		}
+		else if (y_pos < 0 || y_pos >= this.game_board.length) {
+			return false;
+		}
+		if (this.game_board[y_pos][x_pos] === this.wall_char) { 
+			return false;
+		}
+		return true;
+	}
+
+
 	move_player(x_amount, y_amount) {
 		if (x_amount === 0 && y_amount === 0) {
 			throw new Error(`"x_amount" and "y_amount" cannot both be 0.`)
 		}
-		if (x_amount === NaN || y_amount === NaN) {
+		else if (x_amount === NaN || y_amount === NaN) {
 			throw new Error(`Missing "x_amount" or "y_amount".`);
 		}
-
+		if (!(this.can_move_here(this.player_pos["x"] - x_amount, this.player_pos["y"] - y_amount))) {
+			return;
+		}
 		this.game_board[this.player_pos["x"]][this.player_pos["y"]] = this.empty_space_char;
-		if (this.player_pos["x"] - x_amount < 0 || this.player_pos["x"] - x_amount >= this.game_board[0].length) {
-			this.draw_player();
-			return;
-		}
-		else if (this.player_pos["y"] - y_amount < 0 || this.player_pos["y"] - y_amount >= this.game_board.length) {
-			this.draw_player();
-			return;
-		}
 		this.player_pos["x"] -= x_amount;
 		this.player_pos["y"] -= y_amount;
 		this.draw_player();
