@@ -1,0 +1,2 @@
+# JavaScript Puzzle Game
+A clone of a [previous project I did in highschool](https://github.com/UntitledHam/JavaPuzzleGame), where I wrote a simple Ascii puzzle game in Java. I am rewriting it from the ground up in JavaScript in order to teach myself JavaScript. Also I will try and improve it because the original game was not written great because I was fairly new to programming.
