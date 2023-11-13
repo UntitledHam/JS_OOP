@@ -6,8 +6,10 @@ class Game {
 		this.empty_space_char = ".";
 		this.wall_char = "#";
 		this.player_char = "P";
+		this.block_char = "B"; 
 		this.game_board = this.generate_game_board(10, 10);
 		this.player_pos = {"x": 0, "y": 0};
+		this.game_board[2][2] = this.block_char
 	}
 
 
@@ -16,16 +18,29 @@ class Game {
 	}
 
 
-	can_move_here(x_pos, y_pos) { 
-		if (x_pos < 0 || x_pos >= this.game_board[0].length) {
+	can_move_here(x_amount, y_amount) { 
+		let new_x = this.player_pos["x"] - x_amount;
+		let new_y = this.player_pos["y"] - y_amount;
+		if (new_x < 0 || new_x >= this.game_board[0].length) {
 			return false;
 		}
-		else if (y_pos < 0 || y_pos >= this.game_board.length) {
+		else if (new_y < 0 || new_y >= this.game_board.length) {
 			return false;
 		}
-		if (this.game_board[y_pos][x_pos] === this.wall_char) { 
+
+		let area_to_move_to = this.game_board[new_y][new_x];
+
+		if (area_to_move_to === this.wall_char) { 
 			return false;
 		}
+		else if (area_to_move_to === this.block_char) { 
+			this.game_board[new_x - x_amount][new_y - y_amount] = this.block_char;
+			return true; 
+		}
+		else if (area_to_move_to !== this.empty_space_char) {
+			return false;
+		}
+		
 		return true;
 	}
 
@@ -37,7 +52,8 @@ class Game {
 		else if (x_amount === NaN || y_amount === NaN) {
 			throw new Error(`Missing "x_amount" or "y_amount".`);
 		}
-		if (!(this.can_move_here(this.player_pos["x"] - x_amount, this.player_pos["y"] - y_amount))) {
+		
+		if (!(this.can_move_here(x_amount, y_amount))) {
 			return;
 		}
 		this.game_board[this.player_pos["x"]][this.player_pos["y"]] = this.empty_space_char;
