@@ -9,7 +9,9 @@ class Game {
 		this.block_char = "B"; 
 		this.game_board = this.generate_game_board(10, 10);
 		this.player_pos = {"x": 0, "y": 0};
-		this.game_board[2][2] = this.block_char
+		this.game_board[2][2] = this.block_char;
+		this.game_board[3][2] = this.block_char;
+		this.game_board[5][2] = this.wall_char;
 	}
 
 	change_tile(x, y, character) { 
@@ -18,6 +20,27 @@ class Game {
 		this.game_board = new_game_board;
 		
 
+	}
+
+	is_valid_space(x,y) {
+		if (x < 0 || x >= this.game_board[0].length) {
+			return false;
+		}
+		else if (y < 0 || y >= this.game_board.length) {
+			return false;
+		}
+		return true;
+	}
+
+
+	is_valid_block_space(x,y) {
+		if (!(this.is_valid_space(x,y))) {
+			return false; 
+		}
+		if (this.game_board[x][y] == this.block_char || this.game_board[x][y] == this.wall_char) {
+			return false;
+		}
+		return true;
 	}
 
 
@@ -29,10 +52,8 @@ class Game {
 	can_move_here(x_amount, y_amount) { 
 		let new_x = this.player_pos["x"] - x_amount;
 		let new_y = this.player_pos["y"] - y_amount;
-		if (new_x < 0 || new_x >= this.game_board[0].length) {
-			return false;
-		}
-		else if (new_y < 0 || new_y >= this.game_board.length) {
+		
+		if (!(this.is_valid_space(new_x, new_y))) {
 			return false;
 		}
 
@@ -41,7 +62,7 @@ class Game {
 		if (area_to_move_to === this.wall_char) { 
 			return false;
 		}
-		else if (area_to_move_to === this.block_char) { 
+		else if (area_to_move_to === this.block_char && this.is_valid_block_space(new_x - x_amount, new_y - y_amount)) { 
 			this.change_tile(new_x, new_y, this.empty_space_char);
 			this.change_tile(new_x - x_amount, new_y - y_amount, this.block_char);
 			return true; 
