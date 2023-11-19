@@ -12,9 +12,17 @@ class Game {
 		this.game_board[2][2] = this.block_char
 	}
 
+	change_tile(x, y, character) { 
+		let new_game_board = this.game_board.copyWithin();
+		new_game_board[x][y] = character;
+		this.game_board = new_game_board;
+		
+
+	}
+
 
 	draw_player() {
-		this.game_board[this.player_pos["x"]][this.player_pos["y"]] = this.player_char; 
+		this.change_tile(this.player_pos["x"], this.player_pos["y"], this.player_char)
 	}
 
 
@@ -28,13 +36,14 @@ class Game {
 			return false;
 		}
 
-		let area_to_move_to = this.game_board[new_y][new_x];
+		let area_to_move_to = this.game_board[new_x][new_y];
 
 		if (area_to_move_to === this.wall_char) { 
 			return false;
 		}
 		else if (area_to_move_to === this.block_char) { 
-			this.game_board[new_x - x_amount][new_y - y_amount] = this.block_char;
+			this.change_tile(new_x, new_y, this.empty_space_char);
+			this.change_tile(new_x - x_amount, new_y - y_amount, this.block_char);
 			return true; 
 		}
 		else if (area_to_move_to !== this.empty_space_char) {
@@ -56,7 +65,7 @@ class Game {
 		if (!(this.can_move_here(x_amount, y_amount))) {
 			return;
 		}
-		this.game_board[this.player_pos["x"]][this.player_pos["y"]] = this.empty_space_char;
+		this.change_tile(this.player_pos["x"], this.player_pos["y"], this.empty_space_char);
 		this.player_pos["x"] -= x_amount;
 		this.player_pos["y"] -= y_amount;
 		this.draw_player();
@@ -78,15 +87,20 @@ class Game {
 
 	print_game_board() {
 		let output = "";
+		let block_count = 0;
 		if (this.show_coords) {
 			output += `X: ${this.player_pos["x"]}, Y: ${this.player_pos["y"]}.\n`
 		}
 		for (let y = 0; y < this.game_board.length; y++) {
 			for (let x = 0; x < this.game_board[y].length; x++) {
+				if (this.game_board[x][y] == this.block_char) {
+					block_count++;
+				}
 				output += this.game_board[x][y];
 			}
 			output += "\n";
 		}
+		output += `\nBlock Count: ${block_count}.`;
 		console.clear();
 		console.log(output);
 	}
